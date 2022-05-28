@@ -5,17 +5,14 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Sedekah Yuk</title>
-		<link rel="stylesheet" href="styles.css" />
+		<link rel="stylesheet" href="src/css/styles.css" />
 	</head>
 	<body>
 		<div class="container">
 			<h1>Jangan lupa sisihkan uangmu untuk bersedekah!</h1>
-			<blockquote>
-				Katakanlah, "Sungguh, Tuhanku melapangkan rezeki dan membatasinya bagi siapa yang Dia kehendaki di antara hamba-hamba-Nya." Dan apa saja yang kamu infakkan, Allah akan menggantinya dan Dialah pemberi rezeki yang terbaik.
-			</blockquote>
-			<span class="from">- QS. Saba (34) ayat 39 -</span>
+			<div class="quotes"></div>
 
-			<form>
+			<form class="form-alms">
 				<div class="wrapper-input">
 					<label for="salary">Gaji</label>
 					<input type="number" class="input" required id="salary" placeholder="Minimal: 5000" />
@@ -41,16 +38,13 @@
 			</div>
 			<footer>
 				<div class="message">
-					<a href="feedback.html">Ada masukkan?</a>
-					<a href="copyright.html">Copyright Gambar/Logos</a>
+					<a href="src/pages/feedback.html">Ada masukkan?</a>
+					<a href="src/pages/copyright.html">Copyright Gambar/Logos</a>
 				</div>
 				<span>&copy; Jakarta - May.2022</span>
 			</footer>
 		</div>
 		<script>
-			// Bagian index
-			// Bagian gaji dan sedekah
-
 			const inputSalary = document.getElementById('salary');
 			inputSalary.addEventListener('keyup', function () {
 				let salary = this.value;
@@ -71,10 +65,54 @@
 
 				const totalAlms = document.getElementById('alms');
 
-				// const dotsMoney = ((salary / percent) * 100).toLocaleString('');
-				// console.log(dotsMoney);
 				totalAlms.value = `${((salary / 100) * percent).toLocaleString()} Rupiah`;
 			});
+
+			// Quotes
+			function getDataQuotes() {
+				const wrapperQuotes = document.querySelector('.quotes');
+				return fetch('src/js/quotes.json')
+					.then((respon) => respon.json())
+					.then((dataQuotes) => {
+						const quotes = dataQuotes.Quotes;
+						let printQuote = '';
+						quotes.forEach((quote) => {
+							printQuote += quotesUI(quote);
+						});
+						wrapperQuotes.innerHTML = printQuote;
+						manipulationDataQuotes();
+					});
+			}
+
+			function quotesUI(data) {
+				return `<div class="wrapper-blockquote ${data.active ? 'quote-active' : ''}">
+					<blockquote>${data.quote}</blockquote>
+					<span class="from">- ${data.from} -</span>
+				</div>`;
+			}
+
+			function manipulationDataQuotes() {
+				const wrapperQuote = document.querySelectorAll('.wrapper-blockquote');
+
+				let lastSlideQuote = wrapperQuote.length - 1;
+				let slideQuote = 0;
+
+				setInterval(function () {
+					wrapperQuote.forEach((quote) => {
+						quote.classList.remove('quote-active');
+					});
+
+					if (slideQuote !== lastSlideQuote) {
+						slideQuote++;
+					} else {
+						slideQuote = 0;
+					}
+
+					wrapperQuote[slideQuote].classList.add('quote-active');
+				}, 20000);
+			}
+
+			getDataQuotes();
 		</script>
 	</body>
 </html>
