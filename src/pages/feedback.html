@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Copyright Logo</title>
+		<link rel="stylesheet" href="../css/styles.css" />
+	</head>
+	<body class="feedback-body">
+		<div class="container">
+			<h1>Beri komentar jika ada kesalahan ya</h1>
+			<form>
+				<div class="wrapper-input">
+					<label for="comment">Komentar</label>
+					<div class="wrapper-textarea">
+						<textarea id="comment" cols="30" rows="8" placeholder="Komentar kamu jika ada kesalahan pada website ini..." class="input" required minlength="0" maxlength="250"></textarea>
+						<span class="max-word"><span class="current-total-word">0</span>/250</span>
+					</div>
+				</div>
+
+				<button type="submit">Kirim ke WhatsApp</button>
+			</form>
+			<footer>
+				<div class="message">
+					<a href="../../index.html">Sedekah Yuk</a>
+					<a href="copyright.html">Copyright Gambar/Logos</a>
+				</div>
+				<span>&copy; Jakarta - May.2022</span>
+			</footer>
+		</div>
+		<script>
+			const textarea = document.querySelector('textarea');
+			const currentTotalWord = document.querySelector('.current-total-word');
+			textarea.addEventListener('keyup', function () {
+				const lengthValueTextarea = this.value.length;
+				currentTotalWord.textContent = lengthValueTextarea;
+
+				if (lengthValueTextarea > 0 && lengthValueTextarea <= 199) {
+					currentTotalWord.classList.add('success');
+					currentTotalWord.classList.remove('warning');
+				} else if (lengthValueTextarea == 0) {
+					currentTotalWord.classList.remove('success');
+				} else if (lengthValueTextarea >= 200 && lengthValueTextarea <= 249) {
+					currentTotalWord.classList.remove('danger');
+					currentTotalWord.classList.add('warning');
+				} else {
+					currentTotalWord.classList.remove('warning');
+					currentTotalWord.classList.add('danger');
+
+					currentTotalWord.textContent = 250;
+					this.value = this.value.slice(0, currentTotalWord.textContent);
+				}
+			});
+
+			document.forms[0].addEventListener('submit', function (e) {
+				e.preventDefault();
+				const phoneNumber = 6283874968672;
+
+				const message = textarea.value.split(/\r?\n/).join('%0A').split(' ').join('%20');
+				const sendMessage = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+
+				window.location.href = sendMessage;
+			});
+		</script>
+	</body>
+</html>
